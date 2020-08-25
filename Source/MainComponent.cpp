@@ -5,7 +5,11 @@ MainComponent::MainComponent()
 {
     // Make sure you set the size of the component after
     // you add any child components.
-    setSize (800, 600);
+    
+    ampSlider.setRange(0.0, 1.0);
+    
+    addAndMakeVisible(ampSlider);
+    setSize (400, 200);
     setAudioChannels(0, 2);
     
 }
@@ -24,12 +28,14 @@ void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRat
 
 void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill)
 {
+    auto level = ampSlider.getValue();
     for(auto channel = 0; channel < bufferToFill.buffer->getNumChannels(); ++channel)
     {
         auto* buffer = bufferToFill.buffer->getWritePointer(channel, bufferToFill.startSample);
         for(auto sample = 0; sample < bufferToFill.numSamples; ++sample)
         {
-            buffer[sample] = random.nextFloat() * 0.25f - 0.125f;
+            auto rawNoise = random.nextFloat() * 1.0f - 0.5f;
+            buffer[sample] = rawNoise * level;
         }
     }
 }
@@ -53,7 +59,5 @@ void MainComponent::paint (juce::Graphics& g)
 
 void MainComponent::resized()
 {
-    // This is called when the MainContentComponent is resized.
-    // If you add any child components, this is where you should
-    // update their positions.
+    ampSlider.setBounds (100, 10, getWidth() - 110, 20);
 }

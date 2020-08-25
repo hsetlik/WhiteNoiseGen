@@ -25,6 +25,7 @@ public:
 
 private:
     juce::Random random;
+    juce::Slider ampSlider;
     //==============================================================================
     // Your private member variables go here...
 
